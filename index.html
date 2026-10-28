@@ -2,149 +2,941 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grocvia</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 24px 16px;
-      font-family: Arial, sans-serif;
-      background: #f7f7f0;
-      color: #29352d;
-    }
-    header {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-    }
-    .logo {
-      font-size: 30px;
-      font-weight: bold;
-      color: #536b55;
-    }
-    p { line-height: 1.5; }
-    .card {
-      background: white;
-      padding: 20px;
-      margin-top: 18px;
-      border-radius: 16px;
-    }
-    input, button {
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #dfe4d9;
-      font-size: 16px;
-    }
-    input { max-width: 90%; }
-    button {
-      background: #536b55;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    li { margin: 14px 0; }
-    .price { width: 75px; }
-    .remove {
-      background: #eee9e3;
-      color: #29352d;
-      margin-left: 5px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f4ed">
+<title>Grocvia — Smart Food Planning</title>
+
+<style>
+:root {
+  --sage: #84947a;
+  --sage-dark: #53664d;
+  --sage-light: #e8ede3;
+  --ivory: #f7f5ee;
+  --white: #fffefa;
+  --ink: #30352e;
+  --muted: #7c8076;
+  --line: #e5e6dc;
+  --danger: #a45448;
+  --radius: 20px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+
+.app {
+  max-width: 1050px;
+  margin: auto;
+  padding: 20px 16px 50px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.logo {
+  width: 45px;
+  height: 45px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--sage-dark);
+  color: white;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -1px;
+}
+
+.brand p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.tag {
+  padding: 7px 11px;
+  border-radius: 99px;
+  background: var(--sage-light);
+  color: var(--sage-dark);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.hero {
+  padding: 28px 24px;
+  border: 1px solid #dfe5d7;
+  border-radius: 27px;
+  background: linear-gradient(130deg, #e8ede3, #f4f1e7);
+}
+
+.eyebrow {
+  color: var(--sage-dark);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.hero h2 {
+  max-width: 650px;
+  margin: 10px 0;
+  font-size: clamp(29px, 6vw, 43px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+}
+
+.hero p {
+  max-width: 620px;
+  color: #60695a;
+  font-size: 14px;
+}
+
+.card {
+  margin-top: 17px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+h3 { margin: 0 0 5px; font-size: 20px; }
+.subtitle { margin: 0 0 17px; color: var(--muted); font-size: 12px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.field input[type="number"],
+.field input[type="text"],
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  outline-color: var(--sage);
+  background: white;
+  color: var(--ink);
+}
+
+.field textarea { min-height: 75px; resize: vertical; }
+
+.field input[type="range"] {
+  width: 100%;
+  accent-color: var(--sage-dark);
+}
+
+.budget-value {
+  margin-bottom: 5px;
+  color: var(--sage-dark);
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.check-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 12px;
+}
+
+.check-option input {
+  margin-top: 3px;
+  accent-color: var(--sage-dark);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.btn {
+  padding: 12px 17px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--sage-dark);
+  color: white;
+  font-weight: 750;
+}
+
+.btn.secondary {
+  border: 1px solid #dce2d5;
+  background: var(--sage-light);
+  color: var(--sage-dark);
+}
+
+.tabs {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  margin: 20px 0 12px;
+  padding-bottom: 4px;
+}
+
+.tab {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.tab.active {
+  border-color: var(--sage-dark);
+  background: var(--sage-dark);
+  color: white;
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.stat {
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: white;
+}
+
+.stat span { color: var(--muted); font-size: 11px; }
+.stat strong { display: block; margin: 4px 0; font-size: 22px; }
+.stat small { color: var(--muted); font-size: 10px; }
+
+.notice {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid #e8d8b8;
+  border-radius: 13px;
+  background: #fff8e9;
+  color: #785b32;
+  font-size: 12px;
+}
+
+.day {
+  margin-bottom: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: white;
+}
+
+.day-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 15px;
+  background: #f0f2e9;
+}
+
+.day-head span { color: var(--muted); font-size: 11px; }
+
+.meal {
+  padding: 13px 15px;
+  border-top: 1px solid var(--line);
+}
+
+.meal h4 { margin: 3px 0; font-size: 14px; }
+.meal p { margin: 3px 0; color: var(--muted); font-size: 11px; }
+.meal .meal-label {
+  color: var(--sage-dark);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+.shopping-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 13px;
+  align-items: start;
+}
+
+.shopping-list, .summary, .product-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: white;
+}
+
+.list-head { padding: 14px; border-bottom: 1px solid var(--line); }
+
+.shop-item {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 9px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #eff0e9;
+  align-items: start;
+}
+
+.shop-item:last-child { border-bottom: 0; }
+.shop-item input { margin-top: 4px; accent-color: var(--sage-dark); }
+.shop-item h4 { margin: 0; font-size: 13px; }
+.shop-item p { margin: 3px 0 0; color: var(--muted); font-size: 10px; }
+.shop-item .cost { font-size: 12px; font-weight: 800; white-space: nowrap; }
+.shop-item.done h4 { color: #92968e; text-decoration: line-through; }
+
+.summary { padding: 16px; }
+.summary h3 { font-size: 17px; }
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.summary-row.total {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.product-card { padding: 15px; }
+.product-card h4 { margin: 5px 0; }
+.product-price { color: var(--sage-dark); font-size: 21px; font-weight: 800; }
+.product-card p { color: var(--muted); font-size: 11px; }
+
+.score {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 99px;
+  background: var(--sage-light);
+  color: var(--sage-dark);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: white;
+}
+
+table { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 11px; }
+th, td { padding: 11px; border-bottom: 1px solid var(--line); text-align: left; }
+th { background: #eff1e8; color: var(--sage-dark); }
+tr:last-child td { border-bottom: 0; }
+
+footer {
+  margin-top: 26px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+}
+
+@media (max-width: 650px) {
+  .form-grid, .shopping-layout { grid-template-columns: 1fr; }
+  .check-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { gap: 7px; }
+  .stat { padding: 10px; }
+  .stat strong { font-size: 18px; }
+  .product-grid { grid-template-columns: 1fr; }
+  .hero { padding: 23px 18px; }
+  .card { padding: 15px; }
+}
+</style>
 </head>
+
 <body>
-  <header>
-    <div class="logo">Grocvia</div>
-    <p>Cumpărături mai simple. Buget mai bine organizat.</p>
-  </header>
+<div class="app">
 
-  <section class="card">
-    <h1>Cumpărături cu un plan.</h1>
-    <p>Stabilește bugetul și urmărește cheltuielile.</p>
-    <label for="budget">Bugetul tău (lei):</label><br><br>
-    <input id="budget" type="number" value="300" min="0">
-  </section>
+<header>
+  <div class="brand">
+    <div class="logo">g</div>
+    <div>
+      <h1>grocvia</h1>
+      <p>Smart food planning</p>
+    </div>
+  </div>
+  <span class="tag">PLANIFICARE INTELIGENTĂ</span>
+</header>
 
-  <section class="card">
-    <h2>Lista mea de cumpărături</h2>
-    <input id="product" placeholder="Numele produsului">
-    <br><br>
-    <input id="price" type="number" placeholder="Preț (lei)" min="0" step="0.01">
-    <br><br>
-    <button onclick="addProduct()">+ Adaugă produs</button>
-    <ul id="list"></ul>
-    <hr>
-    <h3>Total: <span id="total">0,00</span> lei</h3>
-    <p id="remaining">Buget disponibil: 300,00 lei</p>
-  </section>
+<section class="hero">
+  <div class="eyebrow">Your food, your way</div>
+  <h2>Cumpărături mai inteligente. Mese mai echilibrate.</h2>
+  <p>Personalizează-ți planul alimentar, descoperă rețete și creează o singură listă de cumpărături, adaptată bugetului și preferințelor tale.</p>
+</section>
 
-  <section class="card">
-    <h2>Idei de mese</h2>
-    <p>🥗 Descoperă idei simple pentru mesele de zi cu zi.</p>
-    <h2>Plan alimentar personalizat</h2>
-    <p>📝 Organizează mesele și produsele de care ai nevoie.</p>
-  </section>
+<section class="card">
+  <h3>Planul tău personalizat</h3>
+  <p class="subtitle">Alege preferințele. Grocvia îți va pregăti o propunere de plan și cumpărături.</p>
 
-  <script>
-    let total = 0;
+  <div class="form-grid">
+    <div class="field">
+      <label for="budget">Buget total (lei)</label>
+      <div class="budget-value"><span id="budgetValue">150</span> lei</div>
+      <input id="budget" type="range" min="50" max="1000" step="10" value="150">
+    </div>
 
-    function addProduct() {
-      const productInput = document.getElementById("product");
-      const priceInput = document.getElementById("price");
-      const name = productInput.value.trim();
-      const price = Number(priceInput.value);
+    <div class="field">
+      <label for="days">Pentru câte zile?</label>
+      <select id="days">
+        <option value="3">3 zile</option>
+        <option value="5">5 zile</option>
+        <option value="7" selected>7 zile</option>
+        <option value="14">14 zile</option>
+      </select>
+    </div>
 
-      if (!name || priceInput.value === "" || !Number.isFinite(price) || price < 0) {
-        alert("Introdu numele produsului și un preț valid.");
-        return;
-      }
+    <div class="field">
+      <label for="people">Număr de persoane</label>
+      <select id="people">
+        <option value="1">1 persoană</option>
+        <option value="2">2 persoane</option>
+        <option value="3">3 persoane</option>
+        <option value="4">4 persoane</option>
+        <option value="5">5 persoane</option>
+      </select>
+    </div>
 
-      const li = document.createElement("li");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
+    <div class="field">
+      <label for="store">Magazine preferate</label>
+      <select id="store" multiple size="4">
+        <option selected>Lidl</option>
+        <option>Kaufland</option>
+        <option>Carrefour</option>
+        <option>Auchan</option>
+      </select>
+      <small style="color:var(--muted)">Pe telefon, atinge magazinele dorite.</small>
+    </div>
 
-      const label = document.createElement("span");
-      label.textContent = " " + name + " — " + price.toFixed(2) + " lei ";
+    <div class="field">
+      <label for="goal">Obiectiv principal</label>
+      <select id="goal">
+        <option value="balance">Cel mai bun echilibru nutrițional și de preț</option>
+        <option value="protein">Mai multe proteine</option>
+        <option value="fiber">Mai multe fibre</option>
+        <option value="calories">Mai puține calorii</option>
+        <option value="cheap">Cel mai mic cost</option>
+      </select>
+    </div>
 
-      checkbox.addEventListener("change", () => {
-        label.style.textDecoration = checkbox.checked ? "line-through" : "none";
-      });
+    <div class="field">
+      <label for="meals">Mese pe zi</label>
+      <select id="meals">
+        <option value="3">3 mese</option>
+        <option value="4" selected>3 mese + o gustare</option>
+        <option value="5">3 mese + două gustări</option>
+      </select>
+    </div>
 
-      const remove = document.createElement("button");
-      remove.textContent = "Șterge";
-      remove.className = "remove";
-      remove.onclick = () => {
-        total -= price;
-        li.remove();
-        updateTotals();
-      };
+    <div class="field">
+      <label for="likes">Ingrediente care îți plac</label>
+      <textarea id="likes" placeholder="Ex.: pui, ouă, cartofi, iaurt, orez, broccoli"></textarea>
+    </div>
 
-      li.append(checkbox, label, remove);
-      document.getElementById("list").appendChild(li);
+    <div class="field">
+      <label for="dislikes">Ingrediente de evitat</label>
+      <textarea id="dislikes" placeholder="Ex.: pește, ciuperci, ceapă"></textarea>
+    </div>
 
-      total += price;
-      productInput.value = "";
-      priceInput.value = "";
-      updateTotals();
-    }
+    <div class="field">
+      <label for="diet">Preferințe alimentare</label>
+      <select id="diet">
+        <option value="none">Fără restricții speciale</option>
+        <option value="vegetarian">Vegetarian</option>
+        <option value="highprotein">Bogată în proteine</option>
+        <option value="highfiber">Bogată în fibre</option>
+        <option value="dairyfree">Fără lactate</option>
+      </select>
+    </div>
 
-    function updateTotals() {
-      const budget = Math.max(0, Number(document.getElementById("budget").value) || 0);
-      document.getElementById("total").textContent = total.toLocaleString("ro-RO", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
+    <div class="field">
+      <label for="pantry">Ce ai deja acasă?</label>
+      <textarea id="pantry" placeholder="Ex.: ulei, orez, condimente, făină"></textarea>
+    </div>
+  </div>
 
-      const difference = budget - total;
-      const message = difference >= 0
-        ? "Buget disponibil: " + difference.toLocaleString("ro-RO", {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " lei"
-        : "Ai depășit bugetul cu " + Math.abs(difference).toLocaleString("ro-RO", {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " lei";
+  <div class="actions">
+    <button class="btn" id="generate">Generează planul meu</button>
+    <button class="btn secondary" id="reset">Resetează preferințele</button>
+  </div>
+</section>
 
-      document.getElementById("remaining").textContent = message;
-    }
+<div class="tabs">
+  <button class="tab active" data-view="plan">Plan alimentar</button>
+  <button class="tab" data-view="list">Lista de cumpărături</button>
+  <button class="tab" data-view="compare">Comparație produse</button>
+  <button class="tab" data-view="nutrition">Valori nutriționale</button>
+</div>
 
-    document.getElementById("budget").addEventListener("input", updateTotals);
-  </script>
+<section class="view active" id="plan">
+  <div class="stats">
+    <div class="stat">
+      <span>Cost estimat coș</span>
+      <strong id="totalStat">—</strong>
+      <small id="budgetMessage">În funcție de alegerile tale</small>
+    </div>
+    <div class="stat">
+      <span>Energie medie / zi</span>
+      <strong id="kcalStat">—</strong>
+      <small>kcal estimate per persoană</small>
+    </div>
+    <div class="stat">
+      <span>Proteine medii / zi</span>
+      <strong id="proteinStat">—</strong>
+      <small>g estimate per persoană</small>
+    </div>
+  </div>
+
+  <div class="notice">
+    Prețurile și valorile nutriționale din acest prototip sunt estimări demonstrative, nu oferte verificate sau date live ale magazinelor. Planul este o propunere, nu un substitut pentru recomandări medicale individuale.
+  </div>
+
+  <div id="mealPlan"></div>
+  <div class="actions">
+    <button class="btn" id="showList">Vezi lista consolidată</button>
+    <button class="btn secondary" onclick="window.print()">Tipărește / salvează PDF</button>
+  </div>
+</section>
+
+<section class="view" id="list">
+  <div class="card">
+    <h3>Lista consolidată de cumpărături</h3>
+    <p class="subtitle">Ingredientele comune sunt reunite, cantitățile sunt însumate, iar costul ține cont de ambalajele întregi estimate.</p>
+    <div class="shopping-layout">
+      <div class="shopping-list">
+        <div class="list-head"><strong id="itemCount">Produse</strong></div>
+        <div id="shoppingItems"></div>
+      </div>
+      <aside class="summary">
+        <h3>Rezumat coș</h3>
+        <div class="summary-row"><span>Magazine selectate</span><strong id="summaryStore">Lidl</strong></div>
+        <div class="summary-row"><span>Buget</span><strong id="summaryBudget">150 lei</strong></div>
+        <div class="summary-row"><span>Produse</span><strong id="summaryCount">—</strong></div>
+        <div class="summary-row total"><span>Total estimat</span><strong id="summaryTotal">—</strong></div>
+        <p id="budgetAdvice" style="color:var(--muted);font-size:11px"></p>
+        <button class="btn secondary" id="copyList">Copiază lista</button>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="compare">
+  <div class="card">
+    <h3>Produse cu un bun echilibru</h3>
+    <p class="subtitle">Scorul demonstrativ ia în calcul costul și mai mulți indicatori nutriționali. Compară produse din aceeași categorie.</p>
+    <div class="notice">Un scor mai mare nu înseamnă că produsul este automat potrivit pentru toată lumea. Etichetele reale și prețurile verificate vor fi necesare pentru recomandări exacte.</div>
+    <div class="product-grid" id="productCards"></div>
+  </div>
+  <div class="card">
+    <h3>Tabel comparativ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Produs</th><th>Preț estimat</th><th>kcal/100 g</th>
+            <th>Proteine</th><th>Grăsimi</th><th>Carbohidrați</th>
+            <th>Zaharuri</th><th>Fibre</th><th>Sare</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="nutrition">
+  <div class="card">
+    <h3>Nutriția planului</h3>
+    <p class="subtitle">Estimări per persoană, pe baza rețetelor selectate.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Zi</th><th>Energie</th><th>Proteine</th><th>Grăsimi</th>
+          <th>Saturate</th><th>Carbohidrați</th><th>Zaharuri</th><th>Fibre</th><th>Sare</th>
+        </tr></thead>
+        <tbody id="nutritionTable"></tbody>
+      </table>
+    </div>
+    <div class="notice">
+      Valorile reale diferă în funcție de marcă, rețetă, partea comestibilă și metoda de gătire. Verifică eticheta produselor pentru ingrediente și alergeni.
+    </div>
+  </div>
+</section>
+
+<footer>
+  Grocvia · Prototip web. Prețurile sunt orientative. Nu există încă o conexiune la cataloage live, promoții sau stocuri ale retailerilor.
+</footer>
+
+</div>
+
+<script>
+const foods = {
+  oats: {name:"Fulgi de ovăz", pack:500, price:4.49, kcal:372, p:13.5, f:7, sat:1.2, c:58.7, sugar:1, fiber:10, salt:.02, allergen:"Gluten posibil"},
+  milk: {name:"Lapte 1,5%", pack:1000, price:5.49, kcal:46, p:3.4, f:1.5, sat:1, c:4.8, sugar:4.8, fiber:0, salt:.1, allergen:"Lapte"},
+  yogurt: {name:"Iaurt natural", pack:400, price:4.49, kcal:73, p:5, f:2, sat:1.3, c:7, sugar:7, fiber:0, salt:.1, allergen:"Lapte"},
+  banana: {name:"Banane", pack:1000, price:6.99, kcal:89, p:1.1, f:.3, sat:.1, c:22.8, sugar:12.2, fiber:2.6, salt:0, allergen:"—"},
+  apple: {name:"Mere", pack:1000, price:5.99, kcal:52, p:.3, f:.2, sat:0, c:13.8, sugar:10.4, fiber:2.4, salt:0, allergen:"—"},
+  eggs: {name:"Ouă", pack:10, price:11.99, kcal:143, p:12.6, f:9.5, sat:3.1, c:.7, sugar:.4, fiber:0, salt:.36, allergen:"Ou", unit:"buc"},
+  chicken: {name:"Piept de pui", pack:650, price:19.99, kcal:120, p:22.5, f:2.6, sat:.6, c:0, sugar:0, fiber:0, salt:.12, allergen:"—"},
+  rice: {name:"Orez", pack:1000, price:7.49, kcal:356, p:7, f:.7, sat:.2, c:79, sugar:.1, fiber:1.3, salt:.01, allergen:"—"},
+  potatoes: {name:"Cartofi", pack:2000, price:8.99, kcal:77, p:2, f:.1, sat:0, c:17.5, sugar:.8, fiber:2.2, salt:.01, allergen:"—"},
+  vegetables: {name:"Legume congelate", pack:1000, price:8.99, kcal:54, p:3, f:.5, sat:.1, c:9, sugar:3.5, fiber:4, salt:.08, allergen:"Verifică amestecul"},
+  beans: {name:"Fasole la conservă, scursă", pack:400, price:4.49, kcal:110, p:7.5, f:.5, sat:.1, c:17, sugar:1, fiber:6.5, salt:.4, allergen:"Verifică eticheta"},
+  tuna: {name:"Ton conservă, scurs", pack:160, price:7.49, kcal:116, p:25.5, f:1, sat:.3, c:0, sugar:0, fiber:0, salt:.8, allergen:"Pește"},
+  cottage: {name:"Brânză cottage", pack:180, price:6.49, kcal:98, p:12, f:4.3, sat:2.8, c:3, sugar:2.5, fiber:0, salt:.7, allergen:"Lapte"},
+  bread: {name:"Pâine integrală", pack:500, price:5.49, kcal:247, p:9, f:4, sat:.7, c:41, sugar:5, fiber:7, salt:1.1, allergen:"Gluten"},
+  carrots: {name:"Morcovi", pack:1000, price:4.49, kcal:41, p:.9, f:.2, sat:0, c:9.6, sugar:4.7, fiber:2.8, salt:.07, allergen:"—"},
+  oil: {name:"Ulei", pack:1000, price:8.99, kcal:884, p:0, f:100, sat:10, c:0, sugar:0, fiber:0, salt:0, allergen:"—"},
+  tomatoes: {name:"Roșii la conservă", pack:400, price:3.49, kcal:25, p:1.2, f:.2, sat:0, c:4.5, sugar:3.5, fiber:1.5, salt:.2, allergen:"Verifică eticheta"},
+  lentils: {name:"Linte uscată", pack:500, price:6.49, kcal:352, p:24.6, f:1.1, sat:.2, c:63.4, sugar:2, fiber:10.7, salt:.02, allergen:"Verifică urmele"},
+  peanut: {name:"Unt de arahide", pack:350, price:9.99, kcal:588, p:25, f:50, sat:10, c:20, sugar:6, fiber:6, salt:.5, allergen:"Arahide"}
+};
+
+const recipes = [
+ {id:"oats", name:"Terci de ovăz cu banană", type:"Mic dejun", items:{oats:50,milk:150,banana:80}},
+ {id:"yogurt", name:"Iaurt cu ovăz și măr", type:"Mic dejun", items:{yogurt:200,oats:25,apple:100}},
+ {id:"eggs", name:"Ouă fierte cu pâine integrală", type:"Mic dejun", items:{eggs:2,bread:60,tomatoes:80}},
+ {id:"cottage", name:"Cottage cu banană și pâine", type:"Mic dejun", items:{cottage:100,banana:70,bread:40}},
+ {id:"chickenrice", name:"Pui cu orez și legume", type:"Prânz", items:{chicken:150,rice:65,vegetables:150,oil:5}},
+ {id:"chickenpotato", name:"Pui cu cartofi și morcovi", type:"Prânz", items:{chicken:140,potatoes:220,carrots:80,oil:5}},
+ {id:"lentils", name:"Tocăniță de linte cu roșii", type:"Prânz", items:{lentils:70,tomatoes:150,carrots:80,oil:5}},
+ {id:"tunabeans", name:"Salată de ton și fasole", type:"Prânz", items:{tuna:80,beans:100,tomatoes:100,carrots:50,oil:3}},
+ {id:"eggpotato", name:"Cartofi cu ou și legume", type:"Cină", items:{eggs:2,potatoes:180,vegetables:120,oil:4}},
+ {id:"beanstew", name:"Fasole cu roșii și morcovi", type:"Cină", items:{beans:150,tomatoes:120,carrots:80,oil:4}},
+ {id:"chickenveg", name:"Pui cu legume la tigaie", type:"Cină", items:{chicken:120,vegetables:200,potatoes:100,oil:4}},
+ {id:"tunasandwich", name:"Sandviș cu ton și roșii", type:"Cină", items:{tuna:80,bread:80,tomatoes:100}},
+ {id:"applepeanut", name:"Măr cu unt de arahide", type:"Gustare", items:{apple:150,peanut:10}},
+ {id:"yogurtbanana", name:"Iaurt cu banană", type:"Gustare", items:{yogurt:150,banana:60}},
+ {id:"eggcarrot", name:"Ou fiert și morcov", type:"Gustare", items:{eggs:1,carrots:100}},
+ {id:"cottagebread", name:"Cottage cu pâine integrală", type:"Gustare", items:{cottage:100,bread:30}}
+];
+
+const baseWeek = [
+ [["Mic dejun","oats"],["Prânz","chickenrice"],["Cină","beanstew"],["Gustare","yogurtbanana"]],
+ [["Mic dejun","eggs"],["Prânz","lentils"],["Cină","chickenveg"],["Gustare","applepeanut"]],
+ [["Mic dejun","yogurt"],["Prânz","chickenpotato"],["Cină","eggpotato"],["Gustare","eggcarrot"]],
+ [["Mic dejun","cottage"],["Prânz","tunabeans"],["Cină","beanstew"],["Gustare","yogurtbanana"]],
+ [["Mic dejun","oats"],["Prânz","chickenrice"],["Cină","tunasandwich"],["Gustare","applepeanut"]],
+ [["Mic dejun","eggs"],["Prânz","lentils"],["Cină","chickenveg"],["Gustare","cottagebread"]],
+ [["Mic dejun","yogurt"],["Prânz","chickenpotato"],["Cină","eggpotato"],["Gustare","eggcarrot"]]
+];
+
+const recipeById = Object.fromEntries(recipes.map(r=>[r.id,r]));
+let plan = [];
+let checked = new Set();
+
+const $ = id => document.getElementById(id);
+const fmt = (n,d=0) => Number(n).toLocaleString("ro-RO",{minimumFractionDigits:d,maximumFractionDigits:d});
+const lei = n => fmt(n,2)+" lei";
+
+function selectedStores() {
+  return [...$("store").selectedOptions].map(o=>o.value);
+}
+
+function ingredientsFromText(text) {
+  return text.toLocaleLowerCase("ro-RO").split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
+}
+
+function recipeAllowed(recipe) {
+  const dislikes = ingredientsFromText($("dislikes").value);
+  const likes = ingredientsFromText($("likes").value);
+  const name = (recipe.name+" "+Object.keys(recipe.items).map(k=>foods[k].name).join(" ")).toLocaleLowerCase("ro-RO");
+  if(dislikes.some(word=>name.includes(word))) return false;
+  if($("diet").value==="vegetarian" && /pui|ton/.test(name)) return false;
+  if($("diet").value==="dairyfree" && /iaurt|cottage|lapte/.test(name)) return false;
+  if($("diet").value==="highprotein" && !["chickenrice","chickenpotato","tunabeans","tunasandwich","eggs","cottage"].includes(recipe.id) && recipe.type==="Prânz") return false;
+  if(likes.length && recipe.type!=="Gustare" && !likes.some(word=>name.includes(word))) {
+    // Nu excludem toate rețetele fără un cuvânt preferat: preferințele sunt folosite pentru ordonare.
+    return true;
+  }
+  return true;
+}
+
+function recipeScore(recipe) {
+  const n = nutrition(recipe.items);
+  const goal = $("goal").value;
+  if(goal==="protein") return n.p;
+  if(goal==="fiber") return n.fiber;
+  if(goal==="calories") return -n.kcal;
+  if(goal==="cheap") return -recipeCost(recipe.items);
+  return n.p*0.5 + n.fiber*1.5 - n.kcal*0.02 - recipeCost(recipe.items)*0.15;
+}
+
+function recipeCost(items) {
+  let sum=0;
+  for(const [k,q] of Object.entries(items)) sum += foods[k].price*q/foods[k].pack;
+  return sum;
+}
+
+function nutrition(items) {
+  const out={kcal:0,p:0,f:0,sat:0,c:0,sugar:0,fiber:0,salt:0};
+  for(const [k,q] of Object.entries(items)) {
+    const food=foods[k];
+    const factor=food.unit==="buc" ? q : q/100;
+    for(const key of Object.keys(out)) out[key] += (food[key]||0)*factor;
+  }
+  return out;
+}
+
+function buildPlan() {
+  const days=+$("days").value;
+  const available=recipes.filter(recipeAllowed);
+  const meals=+$("meals").value;
+  plan=[];
+  for(let d=0;d<days;d++) {
+    let picks=baseWeek[d%baseWeek.length].map(([type,id])=>({type,recipe:recipeById[id]}));
+    picks=picks.filter(x=>x.recipe && recipeAllowed(x.recipe));
+    // Refill any filtered slots with allowed recipes of the same meal category.
+    const types=meals===3?["Mic dejun","Prânz","Cină"]:meals===4?["Mic dejun","Prânz","Cină","Gustare"]:["Mic dejun","Prânz","Cină","Gustare","Gustare"];
+    picks=types.map((type,i)=>{
+      let candidate=picks.find(x=>x.type===type && !x.used);
+      if(candidate){candidate.used=true;return {type,recipe:candidate.recipe};}
+      let pool=available.filter(r=>r.type===type).sort((a,b)=>recipeScore(b)-recipeScore(a));
+      if(!pool.length) pool=available;
+      return {type,recipe:pool[(d+i)%pool.length]};
+    }).filter(x=>x.recipe);
+    plan.push({name:["Luni","Marți","Miercuri","Joi","Vineri","Sâmbătă","Duminică"][d%7]+(d>=7?" · ziua "+(d+1):""), meals:picks});
+  }
+}
+
+function aggregateItems() {
+  const total={};
+  const people=+$("people").value;
+  plan.forEach(day=>day.meals.forEach(meal=>{
+    for(const [k,q] of Object.entries(meal.recipe.items)) total[k]=(total[k]||0)+q*people;
+  }));
+  const pantry=ingredientsFromText($("pantry").value);
+  for(const key of Object.keys(total)) {
+    const name=foods[key].name.toLocaleLowerCase("ro-RO");
+    if(pantry.some(x=>name.includes(x)||x.includes(name))) delete total[key];
+  }
+  return total;
+}
+
+function shoppingDetails() {
+  const items=aggregateItems();
+  return Object.entries(items).map(([key,q])=>{
+    const food=foods[key];
+    const packs=Math.ceil(q/food.pack);
+    return {key,q,food,packs,cost:packs*food.price};
+  });
+}
+
+function renderPlan() {
+  $("mealPlan").innerHTML=plan.map(day=>{
+    const dayItems={};
+    day.meals.forEach(meal=>Object.entries(meal.recipe.items).forEach(([k,q])=>dayItems[k]=(dayItems[k]||0)+q));
+    const n=nutrition(dayItems);
+    return `<article class="day">
+      <div class="day-head"><strong>${day.name}</strong><span>${fmt(n.kcal)} kcal · ${fmt(n.p,1)} g proteine / persoană</span></div>
+      ${day.meals.map(meal=>{
+        const r=meal.recipe, n=nutrition(r.items);
+        const ingredients=Object.entries(r.items).map(([k,q])=>foods[k].name+" "+(foods[k].unit==="buc"?q+" buc":q+" g")).join(", ");
+        return `<div class="meal"><div class="meal-label">${meal.type}</div><h4>${r.name}</h4><p>${ingredients}</p><p><strong>${fmt(n.kcal)} kcal</strong> · Proteine ${fmt(n.p,1)} g · Fibre ${fmt(n.fiber,1)} g</p></div>`;
+      }).join("")}
+    </article>`;
+  }).join("");
+}
+
+function renderShopping() {
+  const items=shoppingDetails();
+  const total=items.reduce((s,x)=>s+x.cost,0);
+  const budget=+$("budget").value;
+  $("itemCount").textContent=items.length+" produse estimate";
+  $("summaryStore").textContent=selectedStores().join(", ")||"Neselectat";
+  $("summaryBudget").textContent=lei(budget);
+  $("summaryCount").textContent=items.length;
+  $("summaryTotal").textContent=lei(total);
+  $("totalStat").textContent=lei(total);
+  $("budgetMessage").textContent=total>budget?"Peste buget cu "+lei(total-budget):"În limita bugetului";
+  $("budgetAdvice").textContent=total>budget
+    ?"Pentru a reduce costul, alege mai multe leguminoase și cereale, înlocuiește unele produse scumpe și elimină ce ai deja acasă."
+    :"Estimarea se încadrează în buget. Costul include ambalajele întregi.";
+  $("shoppingItems").innerHTML=items.map(x=>{
+    const done=checked.has(x.key);
+    return `<label class="shop-item ${done?"done":""}">
+      <input type="checkbox" data-key="${x.key}" ${done?"checked":""}>
+      <div><h4>${x.food.name}</h4><p>Necesar: ${fmt(x.q)} ${x.food.unit==="buc"?"buc":"g"} · Cumpără ${x.packs} × ${x.food.pack} ${x.food.unit==="buc"?"buc":"g"}</p></div>
+      <div class="cost">${lei(x.cost)}</div>
+    </label>`;
+  }).join("");
+  document.querySelectorAll("[data-key]").forEach(el=>el.addEventListener("change",()=>{
+    if(el.checked) checked.add(el.dataset.key); else checked.delete(el.dataset.key);
+    renderShopping();
+  }));
+}
+
+function scoreFood(food) {
+  const goal=$("goal").value;
+  const protein=food.p/Math.max(food.kcal,1)*1000;
+  const pricePerKg=food.price/(food.pack/1000);
+  if(goal==="protein") return Math.min(100,protein*2.3);
+  if(goal==="fiber") return Math.min(100,food.fiber*8);
+  if(goal==="calories") return Math.max(0,100-food.kcal/5);
+  if(goal==="cheap") return Math.max(0,100-pricePerKg*1.5);
+  return Math.round(Math.min(100,protein*1.4 + food.fiber*3 + Math.max(0,80-food.kcal/5)*0.3 - food.sugar*0.5));
+}
+
+function renderProducts() {
+  const keys=["yogurt","cottage","tuna","chicken","oats","lentils","beans","bread"];
+  const items=keys.map(key=>({key,food:foods[key],score:scoreFood(foods[key])})).sort((a,b)=>b.score-a.score);
+  $("productCards").innerHTML=items.map((x,i)=>`<article class="product-card">
+    <div class="eyebrow">${i===0?"Scorul cel mai mare":"Alternativă"}</div>
+    <h4>${x.food.name}</h4>
+    <div class="product-price">${lei(x.food.price)} <span style="font-size:10px;color:var(--muted)">/ ambalaj estimat</span></div>
+    <p>${x.food.pack} g · ${lei(x.food.price/(x.food.pack/1000))} / kg (calcul estimativ)</p>
+    <span class="score">Scor demonstrativ ${fmt(x.score)}/100</span>
+    <p>${fmt(x.food.kcal)} kcal · ${fmt(x.food.p,1)} g proteine · ${fmt(x.food.fiber,1)} g fibre per 100 g</p>
+    <p><strong>Alergeni:</strong> ${x.food.allergen}</p>
+  </article>`).join("");
+  $("productTable").innerHTML=items.map(x=>`<tr>
+    <td>${x.food.name}</td><td>${lei(x.food.price)}</td><td>${fmt(x.food.kcal)}</td>
+    <td>${fmt(x.food.p,1)} g</td><td>${fmt(x.food.f,1)} g</td>
+    <td>${fmt(x.food.c,1)} g</td><td>${fmt(x.food.sugar,1)} g</td>
+    <td>${fmt(x.food.fiber,1)} g</td><td>${fmt(x.food.salt,2)} g</td>
+  </tr>`).join("");
+}
+
+function renderNutrition() {
+  let sum={kcal:0,p:0,f:0,sat:0,c:0,sugar:0,fiber:0,salt:0};
+  $("nutritionTable").innerHTML=plan.map(day=>{
+    const items={};
+    day.meals.forEach(meal=>Object.entries(meal.recipe.items).forEach(([k,q])=>items[k]=(items[k]||0)+q));
+    const n=nutrition(items);
+    Object.keys(sum).forEach(k=>sum[k]+=n[k]);
+    return `<tr><td>${day.name}</td><td>${fmt(n.kcal)}</td><td>${fmt(n.p,1)} g</td><td>${fmt(n.f,1)} g</td><td>${fmt(n.sat,1)} g</td><td>${fmt(n.c,1)} g</td><td>${fmt(n.sugar,1)} g</td><td>${fmt(n.fiber,1)} g</td><td>${fmt(n.salt,2)} g</td></tr>`;
+  }).join("");
+  const n=Math.max(plan.length,1);
+  $("kcalStat").textContent=fmt(sum.kcal/n);
+  $("proteinStat").textContent=fmt(sum.p/n,1)+" g";
+}
+
+function renderAll() {
+  $("budgetValue").textContent=$("budget").value;
+  renderPlan();
+  renderShopping();
+  renderProducts();
+  renderNutrition();
+}
+
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===btn));
+  document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id===btn.dataset.view));
+}));
+
+$("generate").addEventListener("click",()=>{
+  buildPlan();
+  checked.clear();
+  renderAll();
+  document.getElementById("plan").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+$("showList").addEventListener("click",()=>{
+  document.querySelector('[data-view="list"]').click();
+  document.getElementById("list").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+$("reset").addEventListener("click",()=>{
+  $("budget").value=150;
+  $("days").value=7;
+  $("people").value=1;
+  $("meals").value=4;
+  $("goal").value="balance";
+  $("diet").value="none";
+  $("likes").value="";
+  $("dislikes").value="";
+  $("pantry").value="";
+  [...$("store").options].forEach(o=>o.selected=o.value==="Lidl");
+  checked.clear();
+  buildPlan();
+  renderAll();
+});
+
+$("budget").addEventListener("input",()=>{$("budgetValue").textContent=$("budget").value;renderShopping();});
+["days","people","meals","store","goal","diet","likes","dislikes","pantry"].forEach(id=>{
+  $(id).addEventListener("change",()=>{
+    if(["days","people","meals","goal","diet","likes","dislikes","pantry"].includes(id)) buildPlan();
+    renderAll();
+  });
+});
+
+$("copyList").addEventListener("click",async()=>{
+  const items=shoppingDetails();
+  let text="Grocvia — lista estimată\n";
+  text+="Magazine: "+selectedStores().join(", ")+"\n";
+  text+="Buget: "+$("budget").value+" lei\n\n";
+  items.forEach(x=>text+=`${checked.has(x.key)?"[x]":"[ ]"} ${x.food.name}: ${fmt(x.q)} g necesar; cumpără ${x.packs} ambalaj(e), ${lei(x.cost)}\n`);
+  text+="\nTotal estimat: "+$("summaryTotal").textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    $("copyList").textContent="Lista a fost copiată";
+  } catch(e) {
+    window.prompt("Copiază lista:",text);
+  }
+});
+
+buildPlan();
+renderAll();
+</script>
 </body>
 </html>
-
